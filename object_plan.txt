@@ -1,0 +1,53 @@
+In Object.h
+
+In Character class: 
+	1. +notified_coordinate(int, int) // what ??
+	2. +notified_HP(int)
+	// ALL these methods are called by floor.h
+	// they are ALL inherited by PC and NPC
+	
+	// below are called by display
+	+ getHP;
+	+ getATK;
+	+ getDEF;
+	+ getMoney;
+	
+	
+	
+	
+In PC class:
+	+ notified_money(int);
+	+ notified_ATK(int);
+	+ notified_DEF(int);
+	
+	
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Helper class: 
+
+struct Attribute { ... } // no need name string
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+In Object class: 
+	field:
+	int index, char symbol;
+	
+
+In Character class:
+	Attribute atr;
+	
+
+
+
+
+
+
+
+
+
+
+

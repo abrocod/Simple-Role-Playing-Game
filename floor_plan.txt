@@ -1,0 +1,125 @@
+In floor.h:
+
+Helper object:
+struct Coordinate {
+	int ew, ns;
+}
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Field of Floor object: 
+
+int PC_Chamber; 
+	// store in which Chamber the PC is generated
+//Object** floor_array;
+std::vector<Object*> floor_vec;
+
+int ** chamber_array; // -> points to an array with type int*
+std::vector<int> chamber_vec;
+	// there are five Chamber arrays
+	// each one store the free tail that can used to generate object
+	// 		delete_space(int** chamber_array, int index) is called after any generation
+	//		to delete the free tail // NPC or item dead no need to call it
+	
+
+
+Method:
+
+// Method used to initialize the game
+		// ALL of the generate function will call:  
+		// find_empty_spot() to determine it index. 
+		// if there is conflict, call find_empty_spot() again:
+		// after generate, call notify_display() to posted the change
+		// also call delete_space(int** chamber_array, int index)
+		
+	+ generate_PC(string name);
+	+ generate_NPC();
+		// first decide race randomly
+		// then call.... 
+	+ generate_potion();
+		// first decide type randomly
+		// then call find_empty_spot()
+	+ generate_stair()
+		// after call find_empty_spot(), also need to check if it is in the same chamber as PC,
+		// if is in the same chamber, then call find_empty_spot() again until no conflict; 
+	+ generate_gold(int type)
+		// first decide type of gold 
+		// call find_empty_spot()
+		// 		generation of Dragon is associated with generate of Dragon treasure
+
+
+// Method used to play the game: 
+		// ALL these methods will call corresponding notify...() method in Character class 
+		// to make change their coordinate and attribute
+		// ALL method Also need to call notify_display(int index, char symbol)
+		// ALL need to call check_spot() method to do spot check
+		
+		
+	+ PC_move(int dir);
+		
+	+ NPC_move();
+		// need to decide where to move NPC first
+	+ PC_Attack(int dir);
+	+ PC_Pickup_Potion(int dir);
+
+
+// Helper method:
+	- find_empty_spot(); 
+		// find an empty spot like: 
+		// 		choose a chamber with equal probability
+		// 		then choose a free tail with equal probability
+		//		 return available index
+						
+	- int find_chamber(int index);
+	
+	- check_spot1(int index, int dir); 
+		// this version is call by PC_pickup_....()
+		// calculate future index use convert_direction_to_index(int dir, int index)
+		// check what is in the future index (tail, wall, gold, potion, NPC ...) 
+		// if it is not someting can be pickup, return -1
+		// else return index with type of object
+		
+	- check_spot2(int index, int dir); 
+		// this version is call by PC/NPC_move
+		// calculate future index use convert_direction_to_index(int dir, int index)
+		// check if future index is move-able
+		// if yes then convert future coord into future index then return it
+		// if it is not place that can move to, return -1
+		
+	- convert_direction_to_index(int dir, int index);
+		// first convert index into coordinate
+		// then perform calculate
+		// convert back to index
+	
+	- delete_space(int** chamber_array, int index);
+		// called by ALL generating function
+		// delete the free tile from Chamber array
+		
+	- convert_coordinate_to_index(Coordinate coord);
+	- convert_index_to_coordinate(int index);
+
+
+// Method used with display class: 
+	+ generate_floor_array(cc3kDisplay display);
+		// scan the input map (or hard-coding map) and transfer it into corresponding floor object
+	
+	- notify_display(int index, char symbol);
+		// called by ALL method that will made change to the status of floor object
+		// notify display object of any specific change
+
+
+
+// Basic: (constructor, destructor)
+	+ Floor(Display display) // constructor
+		// call generate_floor_array(Display display) 
+		// initialize these: 	
+		//		Object** floor_array;
+		//		int ** chamber_array;
+		
+	// no copy constructor or assignment operator
+	~ Floor();
+
+
+

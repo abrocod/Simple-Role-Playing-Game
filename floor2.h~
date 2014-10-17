@@ -1,0 +1,73 @@
+#ifndef __FLOOR_H__
+#define __FLOOR_H__
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm> 
+#include <stdlib.h> 
+#include <time.h>
+#include "object2.h"
+#include "display2.h"
+
+struct Coordinate {
+	int ew, ns;
+};
+
+class Object; // forward declaration
+class Display;
+
+class Floor {
+	public: // TEMP, ADD GETTER FUNCTION
+	int PC_Chamber;  // store in which Chamber the PC is generated
+	std::vector<Object*> floor_vec;
+	std::vector<std::vector<int> > chamber_vec;
+	Display* disp;
+	
+	public:
+	Floor(Display& display);
+	//~Floor(); // NEED TO WRITE IT!
+	
+	void generate_PC(std::string name);
+	void generate_NPC(std::string name);
+	void generate_stair();
+	void generate_potion(int type);
+	void generate_gold(int type);
+	
+	void PC_move(int dir);
+		// representation of direction: 
+		no,so,ea,we,ne,nw,se,sw
+		// 0=no, 1=nw, 2=we, 3=sw,
+		// 4=so, 5=se, 6=ea, 7=ne,
+		
+	void NPC_move();
+		// need to decide where to move NPC first
+	void PC_Attack(int dir);
+	void PC_Pickup_Potion(int dir);
+	void PC_Pickup_Gold(int dir); 
+	
+	// Helper method:
+	int find_empty_spot();  
+	int find_chamber(int index);
+	void notify_display(int index, char symbol, Display& display);
+	void delete_spot(int index);
+
+	int check_spot2(int index, int dir); 
+		// this version is call by PC/NPC_move
+		// calculate future index use convert_direction_to_index(int dir, int index)
+		// check if future index is move-able
+		// if yes then convert future coord into future index then return it
+		// if it is not something can be pickup, return -1
+		
+	int convert_direction_to_index(int dir, int index);
+		// first convert index into coordinate
+		// then perform calculate
+		// convert back to index
+		
+	int convert_coordinate_to_index(Coordinate coord);
+	Coordinate convert_index_to_coordinate(int index);  
+	
+	
+};
+
+#endif

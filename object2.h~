@@ -1,0 +1,119 @@
+#ifndef __OBJECT_H__
+#define __OBJECT_H__
+
+#include "floor2.h"
+
+struct Attribute {
+	int HP;
+	int ATK;
+	int DEF;
+	int money;
+	std::string name;
+	//Attribute(const Attribute& attr); // copy constructor
+};
+
+// The initial attribute of Player races
+const Attribute HUMAN = {140, 20, 20, 0, "Human"};
+const Attribute DWARF = {100, 20, 30, 0, "Dwarf"};
+const Attribute ELF = {140, 30, 10, 0, "Elf"};
+const Attribute ORC = {180, 30, 25, 0, "Orc"};
+
+// The initial attribute of Enemy races
+const Attribute VAMPIRE = {50, 25, 25, 0, "Vampire"};
+const Attribute WEREWOLF = {120, 30, 5, 0, "Werewolf"};
+const Attribute TROLL = {120, 25, 15, 0, "Troll"};
+const Attribute GOBLIN = {70, 5, 10, 0, "Goblin"};
+const Attribute PHOENIX = {0, 35, 25, 0, "Phoenix"};
+const Attribute MERCHANT = {30, 70, 5, 0, "Merchant"};
+const Attribute DRAGON = {150, 20, 20, 0, "Dragon"};
+
+class Object {
+	public: // ADD GETTER AND SETTER ??
+	int index;
+	char symbol;
+	
+	public:
+	Object(int index, char symbol);
+	Object();
+	//~Object();
+};
+
+
+class Character: public Object {
+	public:
+	Attribute attr;
+	Character();
+	Character(int index, std::string name);
+	char checkRace(Attribute& attr, std::string name);
+};
+
+class PC: public Character {
+	public:
+	PC(int index, std::string name);
+};
+
+class NPC: public Character {
+	public:
+	NPC(int index, std::string name);
+
+};  
+
+class Potion: public Object {
+	public: 
+	int type; // only 6 types of potion
+	Potion(int index, int type);
+};
+
+class Gold: public Object {
+	public:
+	int money;
+	Gold(int index, int type);
+	// Gold can be in several types of piles: normal (value 1), 
+	// small horde (value 2), merchant hoard (value 4), dragon hoard (value 6). 
+};
+
+class Stair: public Object {
+	public:
+	Stair(int index);
+};
+
+class Wall_row: public Object {
+	public:
+	Wall_row(int index);
+};
+
+class Wall_col: public Object {
+	public:
+	Wall_col(int index);
+};
+
+class Door: public Object {
+	public:
+	Door(int index);
+};
+
+class Path: public Object {
+	public:
+	Path(int index);
+};
+
+class Tile: public Object {
+	public:
+	Tile(int index);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif
+
+

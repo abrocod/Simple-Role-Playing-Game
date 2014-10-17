@@ -1,0 +1,112 @@
+#include "display2.h"
+#include "floor2.h"
+
+using namespace std;
+
+const float PB_VAMPIRE = float(3)/18;
+const float PB_WEREWOLF = float(2)/9;
+const float PB_TROLL = float(1)/9;
+const float PB_GOBLIN = float(5)/18;
+const float PB_PHOENIX = float(1)/9;
+const float PB_MERCHANT = float(1)/9;
+
+const int NUM_NPC = 20;
+const int NUM_POTION = 10;
+const int NUM_GOLD = 10;
+
+// const float PB_DRAGON:  decided by Dragon treasure 
+
+void game_init(Floor& _floor, char race) {
+	if (race == 'h') {
+		 _floor.generate_PC("Human");
+	} else if (race == 'e') {
+ 		_floor.generate_PC("Elf"); 
+ 	} else if (race == 'd') {
+ 		_floor.generate_PC("Dwarf");
+ 	} else if (race == 'o') {
+ 		_floor.generate_PC("Orc");
+	};
+	
+	// initialize stair:
+	_floor.generate_stair();
+	
+	// initialize potions: 
+	for (int i=0; i<NUM_POTION; ++i) {
+		int x = rand() % 6;
+		_floor.generate_potion(x);
+	};
+	
+	for (int i=0; i<NUM_GOLD; ++i) {
+		int x = rand() % 4;
+		_floor.generate_gold(x);
+	};
+	
+	// initialize NPC:
+	for (int i=0; i<NUM_NPC; ++i) {
+		int x = rand() % 18;
+		if (x < 3) {
+ 			_floor.generate_NPC("Vampire");
+		} else if (x>2 && x<7) {
+ 			_floor.generate_NPC("Werewolf");
+		} else if (x>6 && x<9) {
+ 			_floor.generate_NPC("Troll");
+		} else if (x>8 && x<14) {
+			_floor.generate_NPC("Goblin");
+		} else if (x>13 && x<16) {
+			_floor.generate_NPC("Phoenix"); 
+		} else if (x>15 && x<18) {
+			_floor.generate_NPC("Merchant"); 
+		};
+	};
+};	
+	
+	
+int main(int argc, char *argv[]) { 
+	Floor* _floor = NULL;
+	bool done = false;
+	char race;
+	
+	/* initialize random seed: */
+	srand (time(NULL));
+  
+	Display* _disp = new Display(); // initialize Display with default map
+	
+	while(!done) {
+		char cmd;
+		 
+		if (_floor == NULL) {
+			// if the Floor doesn't exist, create one, and prompt
+		 	// player to select his rece
+		 	_floor = new Floor(*_disp);
+		 	cout << "Type in one of 'h, e, d, o' to select your race:" << endl;
+		 	cin >> race;
+		 	if (cin.eof()) break;
+		 	// initialize the game environment:
+		 	game_init(*_floor, race);
+		};
+		 	
+		_disp->prettyprint();
+		
+		done = true;
+		/* cout << "Command?" << endl;
+		cin >> cmd; // Read in the following command:
+		 	// no,so,ea,we,ne,nw,se,sw: direction
+			// u <direction>: use item
+			// a <direction>: attack NPC
+			// h, e, d, o: select race at beginning
+			// r: restart the game
+			// q: admit defeat and quit the game
+		if (cin.eof()) break;
+		// TO BE CONT
+		*/
+	
+	};
+	
+	delete _disp;
+	delete _floor;
+	
+};
+
+
+
+

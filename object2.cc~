@@ -1,0 +1,117 @@
+#include "object2.h"
+
+using namespace std;
+
+/* Attribute(const Attribute& attr):
+	HP(attr.HP), ATK(attr.ATK), DEF(attr.DEF), money(attr.money),
+	name(attr.name) {}; */
+	
+Object::Object(int index, char symbol) {
+	this->index = index;
+	this->symbol = symbol;
+};
+
+Object::Object(): index(0), symbol(' ') {};
+
+char Character::checkRace(Attribute& attr, string name) {
+	char s;
+	if (name == "Human") {
+		s = '@';
+		attr=HUMAN;
+	} else if (name == "Elf") {
+		s = '@';
+		attr=ELF;
+	} else if (name == "Dwarf") {
+		s = '@';
+		attr=DWARF;
+	} else if (name == "Orc") {
+		s = '@';
+		attr=ORC;
+	} else if (name == "Vampire") {
+		s = 'V';
+		attr = VAMPIRE;
+	} else if (name == "Werewolf") {
+		s = 'W';
+		attr = WEREWOLF;
+	} else if (name == "Troll") {
+		s = 'T';
+		attr = TROLL;
+	} else if (name == "Goblin") {
+		s = 'N';
+		attr = GOBLIN;
+	} else if (name == "Phoenix") {
+		s = 'X';
+		attr = PHOENIX;
+	} else if (name == "Merchant") {
+		s = 'M';
+		attr = MERCHANT;
+	} else if (name == "Dragon") {
+		s = 'D';
+		attr = DRAGON;
+	};
+
+	return s;
+};
+
+Character::Character() {
+	symbol = ' ';
+	index = 0;
+	attr = HUMAN;
+};
+
+Character::Character(int index, string name) {
+	char s = checkRace(attr, name);
+	symbol = s;
+	index = index;
+};
+	
+PC::PC(int index, string name) {
+	Character(index, name); 
+};
+	
+NPC::NPC(int index, string name) {
+	Character(index, name) ;
+};
+
+Potion::Potion(int index, int type):
+	Object(index, 'P'), type(type) {};
+	
+Gold::Gold(int index, int type):
+	Object(index, 'G') {
+	if (type == 0) {
+		// normal treasure:
+		value = 1;
+	} else if (type == 1) {
+		// small horde:
+		value = 2;
+	} else if (type == 2) {
+		// merchant horde:
+		value = 4;
+	} else if (type == 3) {
+		//
+};
+	
+Stair::Stair(int index):
+	Object(index, '\\') {};
+	
+Wall_row::Wall_row(int index):
+	Object(index, '-') {};
+
+Wall_col::Wall_col(int index):
+	Object(index, '|') {};
+
+
+Door::Door(int index):
+	Object(index, '+') {};
+
+
+Path::Path(int index):
+	Object(index, '#') {};
+
+
+Tile::Tile(int index):
+	Object(index, '.') {};
+	
+	
+	
+

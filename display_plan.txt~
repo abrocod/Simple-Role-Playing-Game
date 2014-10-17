@@ -1,0 +1,26 @@
+In Display.h (defined by use struct)
+
+struct Display {
+	std::vector<char> display_vec
+
+	// ctor:
+	Display() 
+	// use built-in default map
+	
+	// DO IT LATER:
+	Display(...) // use import map
+	
+}
+
+
+	+ notified()
+		// called by floor to notice any change
+		
+	+ prettyprint();
+		// called by controller, print to stdout
+		
+		
+
+
+
+

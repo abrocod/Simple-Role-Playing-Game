@@ -1,0 +1,209 @@
+#include "floor2.h"
+
+using namespace std;
+
+Floor::Floor(Display& display) {
+	for (int i=0; i<VEC_LENGTH; i++) {
+		
+		if (display.display_vec.at(i) == '.') {
+			floor_vec.push_back(new Tile(i));
+		} else if (display.display_vec.at(i) == '|') {
+			floor_vec.push_back(new Wall_col(i));
+		} else if (display.display_vec.at(i) == '-') {
+			floor_vec.push_back(new Wall_row(i));
+		} else if (display.display_vec.at(i) == '+') {
+			floor_vec.push_back(new Door(i));
+		} else if (display.display_vec.at(i) == '#') {
+			floor_vec.push_back(new Path(i));
+		} else if (display.display_vec.at(i) == ' ') {
+			floor_vec.push_back(NULL);
+		};
+	};
+	
+	int _length = 5;
+	for (int i=0; i<_length; ++i) {
+		chamber_vec.push_back(display.display_chamber_vec.at(i));
+	};
+	
+	disp = &display;
+};
+
+
+int Floor::find_chamber(int index) {
+//cout << "index: " << index << endl;
+	std::vector<int>::iterator it;
+	for (int i=0; i<5; i++) {
+		it = find((chamber_vec.at(i)).begin(), (chamber_vec.at(i)).end(), index);
+//cout << "it: " << *it << endl;
+		if (*it == index) {
+			return i; // we find the index in chamber i
+		};
+	};
+	return -1; // if index doesn't belong to any chamber, return -1
+};
+
+
+void Floor::generate_PC(std::string name) {
+//cout << "generate_PC" << endl;
+	// find empty spot:
+	int index = find_empty_spot();
+	// initialize PC on this spot:
+	floor_vec.at(index) = new PC(index, name);
+	// find out which chamber does this spot belongs to:
+	PC_Chamber = find_chamber(index);
+	// notify display object:
+	notify_display(index, '@', *disp);
+	// make this spot unvaiable for other object: delete this spot from chamber_vec 
+	delete_spot(index);
+	
+//cout << "h1 " << PC_Chamber << endl;
+};
+
+
+
+void Floor::generate_NPC(std::string name) {
+	int index = find_empty_spot();
+	floor_vec.at(index) = new NPC(index, name);
+	// IMPROVE THIS: (add symbol field directly to Attribute? or add symbol 
+	// field to NPC
+	char s;
+	if (name == "Vampire") {
+		s = 'V';
+	} else if (name == "Werewolf") {
+		s = 'W';
+	} else if (name == "Troll") {
+		s = 'T';
+	} else if (name == "Goblin") {
+		s = 'N';
+	} else if (name == "Phoenix") {
+		s = 'X';
+	} else if (name == "Merchant") {
+		s = 'M';
+	} else if (name == "Dragon") {
+		s = 'D';
+	};
+	notify_display(index, s, *disp);
+	delete_spot(index);
+};
+
+void Floor::generate_stair() {
+//cout << "generate_stair" << endl;
+	// generate stair at a different spot then PC:
+	int index = find_empty_spot();
+	int ch = find_chamber(index);
+	while (ch == PC_Chamber) {
+		index = find_empty_spot();
+		ch = find_chamber(index);
+	};
+	floor_vec.at(index) = new Stair(index);
+	notify_display(index, '\\', *disp);
+	delete_spot(index);
+};
+
+void Floor::generate_potion(int type) {
+	int index = find_empty_spot();
+	floor_vec.at(index) = new Potion(index, type);
+	notify_display(index, 'P', *disp);
+	delete_spot(index);
+};
+
+void Floor::generate_gold(int type) {
+	int index = find_empty_spot();
+	floor_vec.at(index) = new Gold(index, type);
+	/* if (type == 3) {
+		// type==3 is a Dragon Horde:
+		// generate a Dragon around it. DO IT LATER, after finish check surrounding function
+	};  */  
+	notify_display(index, 'G', *disp);
+	delete_spot(index);
+};
+
+void Floor::delete_spot(int index) {
+	int ch = find_chamber(index);
+//cout << "we will delete element in chamber: " << ch << endl;
+	if (ch > -1) {
+//cout << "delete" << endl;
+//cout << chamber_vec.at(ch).size() << endl;
+
+		for(vector<int>::iterator iter = chamber_vec.at(ch).begin(); iter != chamber_vec.at(ch).end(); ++iter ) {
+    			if(*iter == index) {
+       			chamber_vec.at(ch).erase(iter);
+       			break;
+    			};
+		};
+	};
+	
+//cout << chamber_vec.at(ch).size() << endl;
+};
+
+int Floor::find_empty_spot() {
+	// randomly select a chamber with equal probability: 
+	int select_chamber = rand() % 5; // generate random integer of 0-4
+	int chamber_size = chamber_vec.at(select_chamber).size();
+	// randomly select a tile with equal probability:
+	int select_tile = rand() % chamber_size; 
+	int index = (chamber_vec.at(select_chamber)).at(select_tile);
+	return index;
+};
+
+void Floor::notify_display(int index, char symbol, Display& display) {
+	display.notified(index, symbol);
+	
+};
+
+void Floor::PC_move(int dir) {
+
+
+
+};
+
+
+int Floor::check_spot2(int index, int dir, int vec_length) {
+	int fut_index = convert_direction_to_index(dir, index);
+	if (fut_index 
+
+};
+
+int Floor::convert_direction_to_index(int dir, int index) {
+	Coordinate coord = convert_index_to_coordinate(index, NUM_COL);
+	// modify coordinate according to direction:
+	if (dir == 0) {
+		--coord.ns; 
+	} else if (dir == 1) {
+		--coord.ns; --coord.ew;
+	} else if (dir == 2) {
+		--coord.ew;
+	} else if (dir == 3) {
+		++coord.ns; --coord.ew;
+	} else if (dir == 4) {
+		++coord.ns;
+	} else if (dir == 5) {
+		++coord.ns; ++coord.ew;
+	} else if (dir == 6) {
+		++coord.ew;
+	} else if (dir == 7) {
+		++coord.ew; --coord.ns;
+	};
+	int index = convert_coordinate_to_index(oordinate coord, NUM_COL);
+	return index; 
+};
+
+int convert_coordinate_to_index(Coordinate coord, int num_col) {
+	int index = coord.ns * num_col + coord.ew; 
+	return index;
+};
+
+Coordinate convert_index_to_coordinate(int index, int num_col) {
+	Coordinate coord;
+	int r = (int) index/num_col;
+	int c = ii % num_col;
+	coord.ew = c;
+	coord.ns = r;
+	return coord;
+};
+
+
+
+
+
+
